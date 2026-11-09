@@ -2,18 +2,26 @@
 
 > A modern, elegant weekly meal planner website designed with a purple and white palette to showcase Mum's delicious everyday cooking.
 
-![Version](https://img.shields.io/badge/version-0.2.0-8b5cf6.svg)
-![Status](https://img.shields.io/badge/status-interactive--planner-purple.svg)
+![Version](https://img.shields.io/badge/version-0.3.0-8b5cf6.svg)
+![Status](https://img.shields.io/badge/status-mobile--optimized-purple.svg)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
 ---
 
-## ✨ Features (Version 0.2 Interactive)
+## ✨ Features (Version 0.3 Mobile Optimized)
 
+- 📱 **Mobile-First App Experience**:
+  - **Native Bottom Sheet**: Editing dishes on mobile slides up an ergonomic bottom sheet with a grab handle and sticky buttons.
+  - **Touch Swipe Engine**: Effortlessly swipe left or right on your phone screen to navigate between Monday, Tuesday, Wednesday, etc.
+  - **Auto-Day Detection**: Automatically boots into Day View focused on today when opened on mobile phones.
+  - **Haptic Feedback**: Gentle vibration pulse on touch swipe transitions.
+  - **Zero Tap Delay**: Instantaneous touch responses with `touch-action: manipulation`.
+  - **Safe-Area Insets**: Seamless layout across notched iPhones and Android edge-to-edge displays.
+  - **iOS Zoom Prevention**: Form inputs tuned to 16px to prevent accidental viewport zooming.
 - 💜 **White & Purple Aesthetic**: Clean lavender surfaces, royal purple accents, and warm typography designed for Mum.
 - 📅 **7-Day Timetable**: Monday to Sunday with automatic highlighting of today's schedule.
 - 🍳 **4 Meals Per Day**: Breakfast, Lunch, Dinner, and Snacks & Treats.
-- ✏️ **Interactive Meal Planner**: Click or press Enter on any slot to plan dishes, notes/sides, cooking times, and pick custom food icons.
+- ✏️ **Interactive Meal Planner**: Click or tap any slot to plan dishes, notes/sides, cooking times, and pick custom food icons.
 - 💾 **Automatic Browser Saving**: Powered by `localStorage` so Mum's meal plan is preserved whenever she returns.
 - 💡 **Sample Menu Inspiration**: One-click "Sample Menu" button to fill the week with tasty ideas.
 - 📊 **Dynamic Live Stats**: Real-time counter of planned dishes versus open skeleton slots.
@@ -59,8 +67,8 @@ Follow these steps to connect and deploy to your GitHub account (`cariesthuis`):
 ### Push Latest Updates to GitHub:
 ```powershell
 git add .
-git commit -m "feat: release v0.2.0 - interactive meal planner and UI audit fixes"
-git tag -a v0.2.0 -m "Release v0.2.0 - Interactive meal planner"
+git commit -m "feat: release v0.3.0 - mobile native bottom sheet and touch swipe navigation"
+git tag -a v0.3.0 -m "Release v0.3.0 - Mobile optimisation & ergonomics"
 git push origin main --tags
 ```
 
@@ -77,7 +85,7 @@ git push origin main --tags
 ## 🏷️ Versioning & Patch Notes Workflow
 
 Every time we make a notable update:
-1. Update `CHANGELOG.md` with new patch notes under the next version (e.g., `[0.2.0]`).
+1. Update `CHANGELOG.md` with new patch notes under the next version (e.g., `[0.3.0]`).
 2. Commit changes: `git commit -m "feat: release vX.X.X - ..."`.
 3. Create a Git tag: `git tag -a vX.X.X -m "Release vX.X.X"`.
 4. Push code and tags: `git push origin main --tags`.
@@ -89,5 +97,6 @@ Every time we make a notable update:
 
 - [x] **v0.1.0**: Project initialization, skeleton layout, purple & white styling, dual views, print styles.
 - [x] **v0.2.0**: Interactive dish editor, browser `localStorage` saving, live stats, sample menu, and audit fixes.
-- [ ] **v0.3.0**: Ingredients checklist & automated weekly grocery shopping list generator.
-- [ ] **v0.4.0**: Custom recipe photo uploads and favourite meals quick-picker.
+- [x] **v0.3.0**: Native mobile bottom sheet, touch swipe gestures, safe-area insets, and fluid scaling.
+- [ ] **v0.4.0**: Ingredients checklist & automated weekly grocery shopping list generator.
+- [ ] **v0.5.0**: Custom recipe photo uploads and favourite meals quick-picker.

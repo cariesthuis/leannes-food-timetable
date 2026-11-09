@@ -2,8 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Leanne's Food Timetable 🍽️ | Weekly Meal Planner</title>
+
+  <!-- Mobile PWA & App Metas -->
+  <meta name="theme-color" content="#7c3aed">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Food Timetable">
+  <meta name="format-detection" content="telephone=no">
+
+  <!-- Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
@@ -24,7 +33,7 @@
       </div>
 
       <div class="header-actions">
-        <span class="version-badge" title="Current build version">v0.2 Interactive</span>
+        <span class="version-badge" title="Current build version">v0.3 Mobile</span>
         <button type="button" id="quick-sample-btn" class="btn btn-secondary" title="Fill empty slots with tasty inspiration">
           <span class="btn-icon">💡</span>
           <span class="btn-text">Sample Menu</span>
@@ -45,9 +54,9 @@
     <!-- Hero Banner / Notice -->
     <section class="welcome-card">
       <div class="welcome-text">
-        <div class="welcome-pill">Version 0.2 • Interactive Meal Planner</div>
+        <div class="welcome-pill">Version 0.3 • Mobile Optimized</div>
         <h2>What are you cooking this week, Mum? 💜</h2>
-        <p>Tap any slot on the timetable below to add or edit meals. Everything you enter is automatically saved to your browser, so your schedule is always here when you return!</p>
+        <p>Tap any slot to plan meals, or swipe left & right on your phone to switch days. Everything is automatically saved!</p>
       </div>
       <div class="welcome-stats" aria-label="Timetable summary statistics">
         <div class="stat-box">
@@ -99,15 +108,23 @@
       <button type="button" class="day-pill" data-day="sunday">Sun</button>
     </nav>
 
+    <!-- Mobile Swipe Indicator Hint -->
+    <div id="mobile-swipe-hint" class="mobile-swipe-hint hidden" aria-hidden="true">
+      <span>👈 Swipe left or right to switch days 👉</span>
+    </div>
+
     <!-- Timetable Grid Container -->
     <section id="timetable-wrapper" class="timetable-wrapper week-view" aria-live="polite">
       <!-- Days rendered dynamically by app.js -->
     </section>
   </main>
 
-  <!-- Modal for Meal Slot Editor -->
+  <!-- Modal for Meal Slot Editor (Desktop Popup / Mobile Bottom-Sheet) -->
   <div id="meal-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
     <div class="modal-card">
+      <!-- Mobile Bottom Sheet Grab Handle -->
+      <div class="bottom-sheet-handle" aria-hidden="true"></div>
+
       <header class="modal-header">
         <div>
           <span id="modal-day-tag" class="modal-badge">Monday</span>
@@ -201,8 +218,8 @@
   <!-- Footer -->
   <footer class="app-footer">
     <div class="footer-container">
-      <p>Made with 💜 for Mum • <strong>Leanne's Food Timetable</strong> v0.2</p>
-      <p class="footer-subtext">Automatic browser saving enabled • Open on any mobile or desktop</p>
+      <p>Made with 💜 for Mum • <strong>Leanne's Food Timetable</strong> v0.3</p>
+      <p class="footer-subtext">Mobile swipe gestures & safe-area support enabled</p>
     </div>
   </footer>
 

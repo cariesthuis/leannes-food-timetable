@@ -1,6 +1,6 @@
 /**
  * Leanne's Food Timetable - Application Logic
- * Version: 0.2.0 (Interactive Meal Planner)
+ * Version: 0.3.0 (Mobile Optimisation & Ergonomics)
  */
 
 // Storage Key for LocalStorage Persistence
@@ -99,7 +99,6 @@ function initializeTimetableData() {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       const parsed = JSON.parse(saved);
-      // Merge with blankState to safeguard schema against corrupted data
       DAYS_OF_WEEK.forEach(day => {
         if (parsed[day.id]) {
           MEAL_TYPES.forEach(meal => {
@@ -133,6 +132,7 @@ function persistTimetableData() {
 // ==========================================================================
 const timetableWrapper = document.getElementById('timetable-wrapper');
 const daySelectorNav = document.getElementById('day-selector-nav');
+const mobileSwipeHint = document.getElementById('mobile-swipe-hint');
 const viewTabs = document.querySelectorAll('.view-tab');
 const filterPills = document.querySelectorAll('.filter-pill');
 const dayPills = document.querySelectorAll('.day-pill');
@@ -171,7 +171,7 @@ let toastTimeout = null;
 // ==========================================================================
 
 /**
- * Identify the current day of the week to highlight it
+ * Identify current day of the week
  */
 function getTodayDayId() {
   const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
@@ -212,6 +212,49 @@ function updateStats() {
   if (skeletonCountEl) skeletonCountEl.textContent = totalSlots - plannedCount;
 }
 
+/**
+ * Smoothly scroll active day pill into center of navigation
+ */
+function scrollToActiveDayPill() {
+  const activePill = document.querySelector(`.day-pill[data-day="${activeDayId}"]`);
+  if (activePill && daySelectorNav) {
+    activePill.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  }
+}
+
+/**
+ * Navigate forward or backward through days of week (used by swipe gestures)
+ */
+function navigateDay(direction) {
+  const currentIndex = DAYS_OF_WEEK.findIndex(d => d.id === activeDayId);
+  let newIndex = currentIndex + direction;
+
+  // Wrap around Monday <-> Sunday
+  if (newIndex < 0) newIndex = DAYS_OF_WEEK.length - 1;
+  if (newIndex >= DAYS_OF_WEEK.length) newIndex = 0;
+
+  activeDayId = DAYS_OF_WEEK[newIndex].id;
+
+  // Update day pill UI
+  dayPills.forEach(p => {
+    p.classList.toggle('active', p.getAttribute('data-day') === activeDayId);
+  });
+
+  scrollToActiveDayPill();
+
+  // Subtle slide animation effect
+  timetableWrapper.classList.add(direction > 0 ? 'swipe-slide-left' : 'swipe-slide-right');
+  renderTimetable();
+  setTimeout(() => {
+    timetableWrapper.classList.remove('swipe-slide-left', 'swipe-slide-right');
+  }, 220);
+
+  // Subtle mobile haptic vibration if supported by phone
+  if (navigator.vibrate) {
+    try { navigator.vibrate(12); } catch (e) {}
+  }
+}
+
 // ==========================================================================
 // Rendering Logic
 // ==========================================================================
@@ -229,6 +272,16 @@ function renderTimetable() {
     : DAYS_OF_WEEK;
 
   timetableWrapper.className = `timetable-wrapper ${currentView}-view`;
+
+  // Toggle mobile swipe hint in Day View on mobile
+  if (mobileSwipeHint) {
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    if (currentView === 'day' && isMobile) {
+      mobileSwipeHint.classList.remove('hidden');
+    } else {
+      mobileSwipeHint.classList.add('hidden');
+    }
+  }
 
   daysToRender.forEach(day => {
     const isToday = day.id === todayId;
@@ -256,16 +309,14 @@ function renderTimetable() {
       const isFilteredOut = (currentFilter !== 'all' && currentFilter !== meal.id);
       const existingMeal = timetableData[day.id] ? timetableData[day.id][meal.id] : null;
 
-      // Accessibility attributes
       slot.setAttribute('tabindex', '0');
       slot.setAttribute('role', 'button');
       slot.setAttribute('data-day', day.id);
       slot.setAttribute('data-meal-type', meal.id);
 
       if (existingMeal) {
-        // Active Saved Meal Card
         slot.className = `meal-slot active-meal ${isFilteredOut ? 'filtered-out' : ''}`;
-        slot.setAttribute('aria-label', `${day.name} ${meal.name}: ${existingMeal.title}. Click or press Enter to edit.`);
+        slot.setAttribute('aria-label', `${day.name} ${meal.name}: ${existingMeal.title}. Tap or press Enter to edit.`);
         
         slot.innerHTML = `
           <div class="active-meal-header">
@@ -285,9 +336,8 @@ function renderTimetable() {
           </div>
         `;
       } else {
-        // Skeleton Empty Slot
         slot.className = `meal-slot skeleton ${isFilteredOut ? 'filtered-out' : ''}`;
-        slot.setAttribute('aria-label', `${day.name} ${meal.name}: Empty slot. Click or press Enter to plan a meal.`);
+        slot.setAttribute('aria-label', `${day.name} ${meal.name}: Empty slot. Tap or press Enter to plan a meal.`);
         
         slot.innerHTML = `
           <div class="slot-tag">
@@ -307,7 +357,7 @@ function renderTimetable() {
         openMealModal(day.id, meal.id);
       });
 
-      // Keyboard Accessibility (Enter or Space to open modal)
+      // Keyboard Accessibility
       slot.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
@@ -326,7 +376,7 @@ function renderTimetable() {
 }
 
 /**
- * Simple HTML Escaping to prevent injection
+ * Simple HTML Escaping
  */
 function escapeHTML(str) {
   if (!str) return '';
@@ -340,7 +390,7 @@ function escapeHTML(str) {
 }
 
 // ==========================================================================
-// Modal Logic & Form Handling
+// Modal Logic & Form Handling (Desktop Popup / Mobile Bottom-Sheet)
 // ==========================================================================
 
 /**
@@ -374,7 +424,8 @@ function openMealModal(dayId, mealId) {
   }
 
   mealModal.classList.remove('hidden');
-  setTimeout(() => dishNameInput.focus(), 50);
+  // Gentle focus timeout for mobile keyboards
+  setTimeout(() => dishNameInput.focus(), 60);
 }
 
 /**
@@ -416,7 +467,7 @@ mealForm.addEventListener('submit', (e) => {
 });
 
 /**
- * Clear the current slot from modal
+ * Clear current slot
  */
 modalClearSlotBtn.addEventListener('click', () => {
   if (!editingSlot) return;
@@ -432,7 +483,6 @@ modalClearSlotBtn.addEventListener('click', () => {
   showToast(`Cleared ${dayObj ? dayObj.name : ''} ${mealObj ? mealObj.name : 'meal'}.`);
 });
 
-// Modal Close Listeners
 modalCloseBtn.addEventListener('click', closeModal);
 modalCancelBtn.addEventListener('click', closeModal);
 mealModal.addEventListener('click', (e) => {
@@ -448,37 +498,41 @@ document.addEventListener('keydown', (e) => {
 // Views & Navigation Controls
 // ==========================================================================
 
-// View Toggle (Week vs Day)
+function setViewMode(viewMode) {
+  currentView = viewMode;
+  viewTabs.forEach(t => {
+    const isActive = (t.getAttribute('data-view') === viewMode);
+    t.classList.toggle('active', isActive);
+    t.setAttribute('aria-selected', isActive ? 'true' : 'false');
+  });
+
+  if (viewMode === 'day') {
+    daySelectorNav.classList.remove('hidden');
+    scrollToActiveDayPill();
+  } else {
+    daySelectorNav.classList.add('hidden');
+  }
+
+  renderTimetable();
+}
+
 viewTabs.forEach(tab => {
   tab.addEventListener('click', () => {
-    viewTabs.forEach(t => {
-      t.classList.remove('active');
-      t.setAttribute('aria-selected', 'false');
-    });
-    tab.classList.add('active');
-    tab.setAttribute('aria-selected', 'true');
-
-    currentView = tab.getAttribute('data-view');
-    if (currentView === 'day') {
-      daySelectorNav.classList.remove('hidden');
-    } else {
-      daySelectorNav.classList.add('hidden');
-    }
-    renderTimetable();
+    const mode = tab.getAttribute('data-view');
+    setViewMode(mode);
   });
 });
 
-// Day Selector for Day View
 dayPills.forEach(pill => {
   pill.addEventListener('click', () => {
     dayPills.forEach(p => p.classList.remove('active'));
     pill.classList.add('active');
     activeDayId = pill.getAttribute('data-day');
     renderTimetable();
+    scrollToActiveDayPill();
   });
 });
 
-// Meal Filter Pills
 filterPills.forEach(pill => {
   pill.addEventListener('click', () => {
     filterPills.forEach(p => p.classList.remove('active'));
@@ -489,12 +543,47 @@ filterPills.forEach(pill => {
 });
 
 // ==========================================================================
+// Touch Swipe Gestures Engine for Mobile
+// ==========================================================================
+
+function initTouchSwipeNavigation() {
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let touchStartTime = 0;
+
+  timetableWrapper.addEventListener('touchstart', (e) => {
+    if (currentView !== 'day') return;
+    const touch = e.changedTouches[0];
+    touchStartX = touch.screenX;
+    touchStartY = touch.screenY;
+    touchStartTime = Date.now();
+  }, { passive: true });
+
+  timetableWrapper.addEventListener('touchend', (e) => {
+    if (currentView !== 'day') return;
+    const touch = e.changedTouches[0];
+    const deltaX = touch.screenX - touchStartX;
+    const deltaY = touch.screenY - touchStartY;
+    const elapsed = Date.now() - touchStartTime;
+
+    // Minimum 45px swipe, primarily horizontal (1.5x of Y), under 500ms
+    if (Math.abs(deltaX) > 45 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5 && elapsed < 500) {
+      if (deltaX < 0) {
+        // Swiped Left -> Advance to Next Day
+        navigateDay(1);
+      } else {
+        // Swiped Right -> Go to Previous Day
+        navigateDay(-1);
+      }
+    }
+  }, { passive: true });
+}
+
+// ==========================================================================
 // Action Buttons: Sample Menu, Reset Week, Print
 // ==========================================================================
 
-// Quick Sample Menu Button
 quickSampleBtn.addEventListener('click', () => {
-  // Deep clone sample data into timetableData
   DAYS_OF_WEEK.forEach(day => {
     MEAL_TYPES.forEach(meal => {
       if (SAMPLE_WEEK_DATA[day.id] && SAMPLE_WEEK_DATA[day.id][meal.id]) {
@@ -508,7 +597,6 @@ quickSampleBtn.addEventListener('click', () => {
   showToast('Filled timetable with tasty sample ideas! ✨');
 });
 
-// Reset Week Button
 clearWeekBtn.addEventListener('click', () => {
   let plannedCount = 0;
   DAYS_OF_WEEK.forEach(day => {
@@ -533,7 +621,6 @@ clearWeekBtn.addEventListener('click', () => {
   showToast('Timetable reset to empty skeleton 🦴');
 });
 
-// Print Button
 printBtn.addEventListener('click', () => {
   window.print();
 });
@@ -542,9 +629,9 @@ printBtn.addEventListener('click', () => {
 // App Initialization
 // ==========================================================================
 document.addEventListener('DOMContentLoaded', () => {
-  // Set default active day to current day of week
   const today = getTodayDayId();
   activeDayId = today;
+
   dayPills.forEach(p => {
     if (p.getAttribute('data-day') === today) {
       p.classList.add('active');
@@ -553,5 +640,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  renderTimetable();
+  // Mobile Auto-Detection: On phones/tablets (< 768px), default to focused Day View for today!
+  const isMobile = window.matchMedia('(max-width: 768px)').matches;
+  if (isMobile) {
+    setViewMode('day');
+  } else {
+    setViewMode('week');
+  }
+
+  // Initialize Mobile Touch Swipe Listener
+  initTouchSwipeNavigation();
 });
