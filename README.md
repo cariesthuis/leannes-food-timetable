@@ -51,7 +51,7 @@ To practice Git & GitHub like a pro, install these extensions in VS Code:
 
 ## 📦 Setting Up the GitHub Repository (Step-by-Step)
 
-Follow these steps to connect this project to your GitHub account (`carson2010-ctr`):
+Follow these steps to connect this project to your GitHub account (`cariesthuis`):
 
 ### Step 1: Create a New Repo on GitHub
 1. Go to [github.com/new](https://github.com/new).
@@ -63,7 +63,7 @@ Follow these steps to connect this project to your GitHub account (`carson2010-c
 ### Step 2: Link and Push from your Terminal
 Open your terminal in this project folder and run:
 ```powershell
-git remote add origin https://github.com/carson2010-ctr/leannes-food-timetable.git
+git remote add origin https://github.com/cariesthuis/leannes-food-timetable.git
 git branch -M main
 git push -u origin main --tags
 ```
@@ -74,7 +74,7 @@ git push -u origin main --tags
 3. Choose branch: `main` and folder: `/ (root)`.
 4. Click **Save**.
 5. Within 1-2 minutes, Mum can open the timetable on her phone or tablet at:
-   `https://carson2010-ctr.github.io/leannes-food-timetable/`
+   `https://cariesthuis.github.io/leannes-food-timetable/`
 
 ---
 
@@ -95,3 +95,4 @@ Every time we make a notable update:
 - [ ] **v0.2.0**: Form to add / edit Mum's meals per slot, persistent localStorage saving.
 - [ ] **v0.3.0**: Ingredients checklist & shopping list generator based on weekly meals.
 - [ ] **v0.4.0**: Mum's custom photo uploads and recipe notes modal.
+
