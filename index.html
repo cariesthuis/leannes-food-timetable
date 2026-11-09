@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leanne's Food Timetable 🍽️ | Weekly Meal Planner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Header / Navigation -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand">
+        <div class="brand-icon">
+          <span>👩‍🍳</span>
+        </div>
+        <div>
+          <h1 class="brand-title">Leanne's Kitchen Timetable</h1>
+          <p class="brand-subtitle">Delicious homemade food planned for the week</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <span class="version-badge" title="Current build version">v0.1 Skeleton</span>
+        <button id="toggle-sample-btn" class="btn btn-secondary">
+          <span class="btn-icon">✨</span>
+          <span class="btn-text">Preview Filled Example</span>
+        </button>
+        <button id="print-btn" class="btn btn-primary">
+          <span class="btn-icon">🖨️</span>
+          <span>Print Timetable</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <!-- Hero Banner / Notice -->
+    <section class="welcome-card">
+      <div class="welcome-text">
+        <div class="welcome-pill">Version 0.1 • Early Skeleton Preview</div>
+        <h2>Welcome to your fresh weekly menu! 💜</h2>
+        <p>This is the empty skeleton layout ready for all of Mum's everyday dishes. Tap any meal slot below to see how dishes and recipes will look once we start adding food in future updates.</p>
+      </div>
+      <div class="welcome-stats">
+        <div class="stat-box">
+          <span class="stat-number">7</span>
+          <span class="stat-label">Days Planned</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number">4</span>
+          <span class="stat-label">Meals Per Day</span>
+        </div>
+        <div class="stat-box highlight">
+          <span class="stat-number">0</span>
+          <span class="stat-label">Dishes Added Yet</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Controls Bar -->
+    <section class="controls-bar">
+      <!-- View mode toggles -->
+      <div class="view-toggles" role="tablist" aria-label="Timetable Views">
+        <button class="view-tab active" data-view="week" role="tab" aria-selected="true">
+          <span>📅</span> Full Week Grid
+        </button>
+        <button class="view-tab" data-view="day" role="tab" aria-selected="false">
+          <span>📆</span> Day-by-Day View
+        </button>
+      </div>
+
+      <!-- Meal Filter Pills -->
+      <div class="meal-filters">
+        <span class="filter-label">Filter:</span>
+        <button class="filter-pill active" data-filter="all">All Meals</button>
+        <button class="filter-pill" data-filter="breakfast">🍳 Breakfast</button>
+        <button class="filter-pill" data-filter="lunch">🥗 Lunch</button>
+        <button class="filter-pill" data-filter="dinner">🍲 Dinner</button>
+        <button class="filter-pill" data-filter="treat">🍰 Snacks & Treats</button>
+      </div>
+    </section>
+
+    <!-- Day Navigation for Day-by-Day View (hidden in week mode) -->
+    <nav id="day-selector-nav" class="day-selector-nav hidden" aria-label="Day Navigation">
+      <button class="day-pill active" data-day="monday">Mon</button>
+      <button class="day-pill" data-day="tuesday">Tue</button>
+      <button class="day-pill" data-day="wednesday">Wed</button>
+      <button class="day-pill" data-day="thursday">Thu</button>
+      <button class="day-pill" data-day="friday">Fri</button>
+      <button class="day-pill" data-day="saturday">Sat</button>
+      <button class="day-pill" data-day="sunday">Sun</button>
+    </nav>
+
+    <!-- Timetable Grid Container -->
+    <section id="timetable-wrapper" class="timetable-wrapper week-view">
+      <!-- Days rendered dynamically by app.js -->
+    </section>
+  </main>
+
+  <!-- Modal for Meal Slot Preview -->
+  <div id="meal-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-card">
+      <header class="modal-header">
+        <div>
+          <span id="modal-day-tag" class="modal-badge">Monday</span>
+          <span id="modal-meal-tag" class="modal-badge meal-type">Dinner</span>
+          <h3 id="modal-title" class="modal-title">Dish Details</h3>
+        </div>
+        <button id="modal-close-btn" class="modal-close" aria-label="Close dialog">&times;</button>
+      </header>
+
+      <div class="modal-body">
+        <div class="modal-empty-state">
+          <div class="empty-icon-bubble">🍲</div>
+          <h4>Empty Meal Slot</h4>
+          <p>This slot is currently blank in Version 0.1. In upcoming releases, you and Mum will be able to type in meals, add ingredients, upload photos, and track cooking instructions!</p>
+        </div>
+
+        <div class="preview-form-peek">
+          <div class="form-preview-label">Preview of how entries will look:</div>
+          <div class="peek-input-group">
+            <span class="peek-label">Dish Name</span>
+            <div class="peek-placeholder">e.g., Mum's Homemade Shepherd's Pie with Roast Veggies</div>
+          </div>
+          <div class="peek-input-group">
+            <span class="peek-label">Notes & Prep</span>
+            <div class="peek-placeholder">e.g., Prep beef mince the morning of, serve hot with gravy</div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="modal-footer">
+        <button id="modal-ok-btn" class="btn btn-primary">Got it!</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <p>Made with 💜 for Mum • <strong>Leanne's Food Timetable</strong> v0.1</p>
+      <p class="footer-subtext">Practicing Git & GitHub version control • Ready for food entries in v0.2</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
